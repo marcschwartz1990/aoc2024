@@ -1,5 +1,5 @@
 //
-//  day01-part01.swift
+//  day01.swift
 //  
 //
 //  Created by Marc Schwartz on 12/2/24.
