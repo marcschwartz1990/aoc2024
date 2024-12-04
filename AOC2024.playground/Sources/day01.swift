@@ -24,18 +24,18 @@ public struct Day1 {
         leftArray.sort()
         rightArray.sort()
         let numIndices = leftArray.count
-        
+
         var answer = 0
         for idx in 0..<numIndices {
             answer += abs(rightArray[idx] - leftArray[idx])
         }
-        
+
         return answer
     }
 
     public func solvePart2() -> Int {
         let input = getInput()
-        var (leftArray, rightArray) = parse(input)
+        let (leftArray, rightArray) = parse(input)
 
         var rightArrayHashMap = [Int:Int]() // Number:Count
 
@@ -60,18 +60,20 @@ public struct Day1 {
     public func parse(_ input: String) -> (left: [Int], right: [Int]) {
         var leftArray = [Int]()
         var rightArray = [Int]()
-        
+
         let splitLines = input.split(separator: "\n")
-        
+
         splitLines.forEach { line in
             let splitLine = line.split(separator: " ")
             leftArray.append(Int(splitLine[0])!)
             rightArray.append(Int(splitLine[1])!)
         }
-        
+
         return (leftArray, rightArray)
     }
+}
 
+extension Day1 {
     public func getInput() -> String {
         return """
 77442   88154

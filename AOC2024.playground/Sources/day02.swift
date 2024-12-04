@@ -14,32 +14,58 @@ public struct Day2 {
 
         var safeReports = 0
         reports.forEach { report in
-            guard isReportSafe(report: report) else { return }
+            let reportArray = makeReportAnIntArray(report: report)
+            guard isReportSafe(report: reportArray) else { return }
             safeReports += 1
         }
 
         return safeReports
     }
 
-    public func isReportSafe(report: String) -> Bool {
-        let reportArray = makeReportAnArray(report: report)
-        guard reportArray[0] != reportArray[1] else { return false }
+    public func solvePart2() -> Int {
+        let input = getInput()
+        let reports = parseReports(input)
 
-        let isDescendingReport = isDescending(num1: Int(reportArray[0])!, num2: Int(reportArray[1])!)
+        var safeReports = 0
+        reports.forEach { report in
+            let reportArray = makeReportAnIntArray(report: report)
+            if isReportSafe(report: reportArray) || checkAllPossibleRemovals(from: reportArray) {
+                safeReports += 1
+            }
+        }
+        
+        return safeReports
+    }
 
-        var leftPointerIndex = 0
-        var rightPointerIndex = 1
-        while rightPointerIndex < reportArray.count {
-            let num1 = Int(reportArray[leftPointerIndex])!
-            let num2 = Int(reportArray[rightPointerIndex])!
+    public func checkAllPossibleRemovals(from report: [Int]) -> Bool {
+        for idx in 0..<report.count {
+            var localReport = report
+            localReport.remove(at: idx)
+            if isReportSafe(report: localReport) {
+                return true
+            }
+        }
+        return false
+    }
+
+    public func isReportSafe(report: [Int]) -> Bool {
+        guard report[0] != report[1] else { return false }
+
+        let isDescendingReport = isDescending(num1: report[0], num2: report[1])
+
+        var left = 0
+        var right = 1
+        while right < report.count {
+            let num1 = report[left]
+            let num2 = report[right]
             let isContinuingInSameDirection = isDescendingReport && isDescending(num1: num1, num2: num2)
-                || !isDescendingReport && !isDescending(num1: num1, num2: num2)
+            || !isDescendingReport && !isDescending(num1: num1, num2: num2)
             guard isContinuingInSameDirection,
                   isInRange(num1: num1, num2: num2) else {
                 return false
             }
-            leftPointerIndex += 1
-            rightPointerIndex += 1
+            left += 1
+            right += 1
         }
         return true
     }
@@ -57,9 +83,17 @@ public struct Day2 {
         return input.split(separator: "\n").map { String($0) }
     }
 
-    public func makeReportAnArray(report: String) -> [String] {
-        return report.split(separator: " ").map { String($0) }
+    public func makeReportAnIntArray(report: String) -> [Int] {
+        return report.split(separator: " ").map { Int($0)! }
     }
+}
+
+// remove each nuber and use first parsing idea. If it returns true every time, it is safe
+// 4 4 3 2 1
+// 4 5 3 2 1
+// 9 4 5 6 7
+
+extension Day2 {
 
     public func getInput() -> String {
 """
